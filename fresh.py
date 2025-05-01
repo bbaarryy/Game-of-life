@@ -18,10 +18,13 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+
+color1 = WHITE
+color2 = BLACK
 # Создаем игру и окно
 pygame.init()
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.RESIZABLE)
 
 pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
@@ -33,7 +36,7 @@ arr = []
 for x in range(n+2):
     arr.append([0])
     for y in range(n+1):
-        arr[x].append(random.randint(0,1))
+        arr[x].append(0)
 
 preset = 1
 mouse_down = 0
@@ -45,7 +48,7 @@ while running:
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_down=0
         elif mouse_down == 1 and event.type == pygame.MOUSEMOTION:
-            if (event.pos[1] > n * p):
+            if (event.pos[1] > n * p and event.pos[0] > 3*p):
                 preset = 0
                 FPS = 10
                 # print("Go!")
@@ -57,10 +60,15 @@ while running:
                     print("Куда жмешь?")
         elif event.type == pygame.MOUSEBUTTONDOWN and preset==1:
             mouse_down = 1
-            if(event.pos[1] > n*p):
+            if(event.pos[1] > n*p and event.pos[0] > 3*p):
                 preset=0
                 FPS = 10
                 #print("Go!")
+            elif(event.pos[1] > n*p and event.pos[0] <= 3*p):
+
+                for x in range(n):
+                    for y in range(n):
+                        arr[x+1][y+1] = random.randint(0,1)
             else:
                 #print(event.pos)
                 try:
@@ -69,19 +77,19 @@ while running:
                     print("Куда жмёшь?")
         elif event.type == pygame.MOUSEBUTTONDOWN and preset==0:
             preset = 1
-            FPS = 30
+            FPS = 60
 
     for x in range(n):
         for y in range(n):
             if(arr[x+1][y+1]):
-                pygame.draw.rect(screen, BLACK, (x*p,y*p,p,p), 0)
+                pygame.draw.rect(screen, color1, (x*p,y*p,p,p), 0)
             else:
-                pygame.draw.rect(screen, (255,174,201), (x * p, y * p, p, p), 0)
+                pygame.draw.rect(screen, color2, (x * p, y * p, p, p), 0)
 
-    for x in range(n):
-        pygame.draw.line(screen,BLACK,(0,p*x),(p*n,p*x))
-    for x in range(n):
-        pygame.draw.line(screen,BLACK,(p*x,0),(p*x,p*n))
+    # for x in range(n):
+    #     pygame.draw.line(screen,BLACK,(0,p*x),(p*n,p*x))
+    # for x in range(n):
+    #     pygame.draw.line(screen,BLACK,(p*x,0),(p*x,p*n))
 
     pygame.draw.line(screen,BLACK,(0,p*n), (p*n,p*n),3)
     pygame.draw.line(screen, BLACK, (0, p *(n+3)), (p*n,p * n+3*p),3)
@@ -90,6 +98,10 @@ while running:
     else:
         pygame.draw.polygon(screen, BLACK, [(n * p // 2, n * p + p * 1), (n * p // 2, n * p + p * 2),
                                             (n * p // 2 + p, n * p + p * 2), (n * p // 2 + p, n * p + p * 1)])
+
+    this_font = pygame.font.SysFont('impact', 24)
+    text = this_font.render("+rand", True, (0, 0, 0))
+    screen.blit(text, (p//2, p*n+p//2 ))
 
     new_arr = [a[:] for a in arr]
 
@@ -108,7 +120,12 @@ while running:
 
     arr = [a[:] for a in new_arr]
 
+    for x in range(n+2):
+        arr[0][x]=0
+        arr[x][0]=0
+        arr[n+1][x]=0
+        arr[x][n+1]=0
+
     pygame.display.update()
     clock.tick(FPS)
     #screen.fill((255, 255, 255))
-
