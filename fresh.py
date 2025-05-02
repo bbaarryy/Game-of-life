@@ -42,12 +42,29 @@ preset = 1
 mouse_down = 0
 lastx = 1
 lasty = 1
+
+def random_choice():
+    for x in range(n):
+        for y in range(n):
+            arr[x+1][y+1] = random.randint(0,1)
+
+def clear():
+    for x in range(n):
+        for y in range(n):
+            arr[x+1][y+1] = 0
+
+
 while running:
     screen.fill((255,255,255))
+
+    keys = pygame.key.get_pressed() 
+    
     for event in pygame.event.get():
+        ch = 0
         if event.type == pygame.QUIT:
             exit()
         elif event.type == pygame.KEYDOWN:
+            print(event.dict)
             if event.dict['key'] == 32:
                 if preset==1:
                     preset=0
@@ -55,44 +72,27 @@ while running:
                 else:
                     preset=1
                     FPS = 90
-            elif 79 <= event.dict['scancode'] <= 82:
-                if event.dict['key'] == 1073741903:
-                    lastx+=1
-                elif event.dict['key'] == 1073741904:
-                    lastx-=1
-                elif event.dict['key'] == 1073741905:
-                    lasty+=1
-                elif event.dict['key'] == 1073741906:
-                    lasty-=1
-                try:
-                    preset=1
-                    arr[lastx][lasty] = 1
-                except:
-                    print("куда жмёшь?")
-
+            if event.dict['key'] == 99:
+                clear()
+            if event.dict['key'] == 114:
+                random_choice()
+                
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_down=0
         elif mouse_down == 1 and event.type == pygame.MOUSEMOTION:
-            if (event.pos[1] > n * p and event.pos[0] > 3*p):
-                preset = 0
-                FPS = 10
-            else:
-                try:
-                    lastx = event.pos[0] // p + 1
-                    lasty = event.pos[1] // p + 1
-                    arr[event.pos[0] // p + 1][event.pos[1] // p + 1] = 1
-                except:
-                    print("Куда жмешь?")
+            try:
+                lastx = event.pos[0] // p + 1
+                lasty = event.pos[1] // p + 1
+                arr[event.pos[0] // p + 1][event.pos[1] // p + 1] = 1
+            except:
+                print("Куда жмешь?")
+
         elif event.type == pygame.MOUSEBUTTONDOWN and preset==1:
             mouse_down = 1
             if(event.pos[1] > n*p and event.pos[0] <= 4*p):
-                for x in range(n):
-                    for y in range(n):
-                        arr[x+1][y+1] = random.randint(0,1)
+                random_choice()
             elif(event.pos[1] > n*p and event.pos[0] >= (n-3)*p):
-                for x in range(n):
-                    for y in range(n):
-                        arr[x+1][y+1] = 0
+                clear()
             elif(event.pos[1] > n*p):
                 preset=0
                 FPS = 10
@@ -107,6 +107,24 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN and preset==0:
             preset = 1
             FPS = 90
+
+    if keys[pygame.K_RIGHT]:
+        lastx+=1
+        ch=1
+    elif keys[pygame.K_LEFT]:
+        lastx-=1
+        ch=1
+    elif keys[pygame.K_DOWN]:
+        lasty+=1
+        ch=1
+    elif keys[pygame.K_UP]:
+        lasty-=1
+        ch=1
+    if(ch):
+        try:
+            arr[lastx][lasty]=1
+        except:
+            print("error")        
 
     for x in range(n):
         for y in range(n):
