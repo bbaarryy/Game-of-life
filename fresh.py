@@ -65,6 +65,7 @@ while running:
             exit()
         elif event.type == pygame.KEYDOWN:
             print(event.dict)
+            #+rus
             if event.dict['key'] == 32:
                 if preset==1:
                     preset=0
@@ -72,11 +73,11 @@ while running:
                 else:
                     preset=1
                     FPS = 90
-            if event.dict['key'] == 99:
+            if event.dict['scancode'] == 6:
                 clear()
-            if event.dict['key'] == 114:
+            if event.dict['scancode'] == 44:
                 random_choice()
-                
+
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_down=0
         elif mouse_down == 1 and event.type == pygame.MOUSEMOTION:
