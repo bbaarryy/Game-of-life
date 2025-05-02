@@ -6,11 +6,11 @@ import copy
 
 from pygame.color import THECOLORS
 
-n = 160
-p = 10
+n = 100
+p = 15
 
 WIDTH = p*n
-HEIGHT = p*(n+3)
+HEIGHT = p*n
 FPS = 90
 # Задаем цвета
 WHITE = (255, 255, 255)
@@ -73,9 +73,9 @@ while running:
                 else:
                     preset=1
                     FPS = 90
-            if event.dict['scancode'] == 6:
+            elif event.dict['scancode'] == 6:
                 clear()
-            if event.dict['scancode'] == 44:
+            elif event.dict['scancode'] == 21:
                 random_choice()
 
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -110,20 +110,20 @@ while running:
             FPS = 90
 
     if keys[pygame.K_RIGHT]:
-        lastx+=1
+        lastx+=0.1
         ch=1
     elif keys[pygame.K_LEFT]:
-        lastx-=1
+        lastx-=0.1
         ch=1
     elif keys[pygame.K_DOWN]:
-        lasty+=1
+        lasty+=0.1
         ch=1
     elif keys[pygame.K_UP]:
-        lasty-=1
+        lasty-=0.1
         ch=1
     if(ch):
         try:
-            arr[lastx][lasty]=1
+            arr[int(lastx)][int(lasty)]=1
         except:
             print("error")        
 
@@ -134,27 +134,6 @@ while running:
             else:
                 pygame.draw.rect(screen, color2, (x * p, y * p, p, p), 0)
 
-    # for x in range(n):
-    #     pygame.draw.line(screen,BLACK,(0,p*x),(p*n,p*x))
-    # for x in range(n):
-    #     pygame.draw.line(screen,BLACK,(p*x,0),(p*x,p*n))
-
-    pygame.draw.line(screen,BLACK,(0,p*n), (p*n,p*n),3)
-    pygame.draw.line(screen, BLACK, (0, p *(n+3)), (p*n,p * n+3*p),3)
-    pygame.draw.line(screen, BLACK, (4*p,n*p), (4*p,(n+3)*p),3)
-    pygame.draw.line(screen, BLACK, ((n-3)*p,n*p), ((n-3)*p,(n+3)*p),3)
-    if(preset==1):
-        pygame.draw.polygon(screen,BLACK,[(n*p//2,n*p+p*1),(n*p//2,n*p+p*2),(n*p//2+p,n*p+p*1.5)])
-    else:
-        pygame.draw.polygon(screen, BLACK, [(n * p // 2, n * p + p * 1), (n * p // 2, n * p + p * 2),
-                                            (n * p // 2 + p, n * p + p * 2), (n * p // 2 + p, n * p + p * 1)])
-
-    this_font = pygame.font.SysFont('impact', p+7)
-    text = this_font.render("+ rand", True, (0, 0, 0))
-    screen.blit(text, (p//2, p*n+p ))
-
-    text = this_font.render("clear", True, (0, 0, 0))
-    screen.blit(text, (p//2+p*(n-3), p*n+p ))
 
     new_arr = [a[:] for a in arr]
 
