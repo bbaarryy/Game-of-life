@@ -1,14 +1,14 @@
 import pygame
 import random
 
-from pygame.color import THECOLORS
-
 n = 100
 p = 5
 
 WIDTH = p * n
 HEIGHT = p * n
-FPS = 90
+FPS_run = 10
+FPS_draw = 120
+
 # Задаем цвета
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -78,7 +78,6 @@ def draw_line(lx, ly, x, y):
         curry += plus
     arr[x][y] = 1
 
-
 def clear():
     for x in range(n):
         for y in range(n):
@@ -86,54 +85,49 @@ def clear():
 
 running = True
 while running:
-    screen.fill((255, 255, 255))
 
-    keys = pygame.key.get_pressed()
-    ch = 0
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
         elif event.type == pygame.KEYDOWN:
-            if event.dict['key'] == 32:
-                if drawing == 1:
-                    drawing = 0
-                    FPS = 10
-                else:
-                    drawing = 1
-                    FPS = 200
-            elif event.dict['scancode'] == 6:
+            if event.key == pygame.K_SPACE:
+                drawing ^= 1
+            elif event.key == pygame.K_c:
+                drawing = 1
                 clear()
-            elif event.dict['scancode'] == 21:
+            elif event.key == pygame.K_r:
+                drawing = 1
                 random_choice()
-
         elif event.type == pygame.MOUSEBUTTONUP:
             mouse_down = 0
         elif mouse_down == 1 and event.type == pygame.MOUSEMOTION:
+            try:
+                arr[event.pos[0] // p + 1][event.pos[1] // p + 1] = 1
 
-            arr[event.pos[0] // p + 1][event.pos[1] // p + 1] = 1
-            lx = lastx
-            ly = lasty
-            x = event.pos[0] // p + 1
-            y = event.pos[1] // p + 1
-            draw_line(lx,ly,x,y)
-            #draw_line(0, 10,10 ,0 )
-            lastx = event.pos[0] // p + 1
-            lasty = event.pos[1] // p + 1
+                x = event.pos[0] // p + 1
+                y = event.pos[1] // p + 1
+                draw_line(lastx,lasty,x,y)
 
+                lastx = x
+                lasty = y
+            except:
+                pass
 
         elif event.type == pygame.MOUSEBUTTONDOWN and drawing == 1:
             mouse_down = 1
             try:
                 lastx = event.pos[0] // p + 1
                 lasty = event.pos[1] // p + 1
-                arr[event.pos[0] // p + 1][event.pos[1] // p + 1] ^= 1
+                arr[lastx][lasty] ^= 1
             except:
                 print("Куда жмёшь?")
 
         elif event.type == pygame.MOUSEBUTTONDOWN and drawing == 0:
             drawing = 1
-            FPS = 200
 
+    keys = pygame.key.get_pressed()
+    ch = 0
     if keys[pygame.K_RIGHT]:
         lastx += 0.1
         ch = 1
@@ -183,5 +177,8 @@ while running:
         arr[x][n + 1] = 0
 
     pygame.display.update()
-    clock.tick(FPS)
+    if(drawing):
+        clock.tick(FPS_draw)
+    else:
+        clock.tick(FPS_run)
     # screen.fill((255, 255, 255))
